@@ -1,6 +1,6 @@
 const imgur = require("imgur");
 const fs = require("fs");
-const { downloadFile } = require("./../../utils/index");
+const { downloadFile } = require("../../utils/index");
 
 module.exports.config = {
   name: "imgur",
@@ -39,7 +39,7 @@ module.exports.run = async ({ api, event }) => {
     try {
       const getLink = await imgur.uploadFile(getImage)
       console.log(getLink);
-      msg += `${getLink.link}\n`
+      msg += `"${getLink.link}",\n`
       fs.unlinkSync(getImage)
     } catch {
       Error.push(getImage);
@@ -47,4 +47,4 @@ module.exports.run = async ({ api, event }) => {
     }
   }
   return api.sendMessage(`${msg}`, threadID);
-}
+      }
