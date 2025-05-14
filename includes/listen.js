@@ -304,210 +304,107 @@ module.exports = function ({ api, models }) {
   };
   setInterval(checkAndExecuteEvent, tenMinutes / 10);
   return async (event) => {
-    let form_mm_dd_yyyy = (input = "", split = input.split("/")) =>
-      `${split[1]}/${split[0]}/${split[2]}`;
-    let prefix =
-      (global.data.threadData.get(event.threadID) || {}).PREFIX ||
-      global.config.PREFIX;
+        if (event.type == "change_thread_image") api.sendMessage({body: `» [ 𝐂𝐀̣̂𝐏 𝐍𝐇𝐀̣̂𝐓 𝐍𝐇𝐎́𝐌 ]\n»  ${event.snippet}`, attachment: (await global.nodemodule["axios"]({
+url: (await global.nodemodule["axios"]('https://api.sumiproject.net/images/girl ')).data.data,
+method: "GET",
+responseType: "stream"
+})).data
+ },event.threadID, event.messageID);      
+  let data = JSON.parse(fs.readFileSync(__dirname + "/../modules/commands/cache/approvedThreads.json"));
+    let chuaduyet = __dirname + "/cache/chuaduyet.json";
+    let threadInfo = await api.getThreadInfo(event.threadID);
+        let threadName = threadInfo.threadName ? `${threadInfo.threadName}` : `${await Users.getNameUser(event.threadID)}`;
+    var time = moment.tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY || HH:mm:ss');
+  const res = await axios.get(`https://api.sumiproject.net/text/thinh `);
+var ttoan = res.data.data; 
+	  let adminBot = global.config.ADMINBOT;
+	  let ndhBot = global.config.NDH;
+	  let pendingPath = __dirname + "/../modules/commands/cache/pendingdThreads.json";
+	  if (!data.includes(event.threadID) && !adminBot.includes(event.senderID) &&!ndhBot.includes(event.senderID)) {
+		
+		//getPrefix
+		  const threadSetting = (await Threads.getData(String(event.threadID))).data || {};
+        
+		  const prefix = (threadSetting.hasOwnProperty("PREFIX")) ? threadSetting.PREFIX : global.config.PREFIX;
+      //check body
+		if (event.body && event.body == `${prefix}thuebot`) {
+		  adminBot.forEach(e => {
+			api.sendMessage(`=== [ 𝗬𝗲̂𝘂 𝗰𝗮̂̀𝘂 ] ===
 
-    if (
-      (event.body || "").startsWith(prefix) &&
-      event.senderID != api.getCurrentUserID() &&
-      !global.config.ADMINBOT.includes(event.senderID)
-    ) {
-      let thuebot;
-      try {
-        thuebot = JSON.parse(
-          require("fs").readFileSync(
-            process.cwd() + "/modules/commands/cache/data/thuebot.json",
-          ),
-        );
-      } catch {
-        thuebot = [];
-      }
+👨‍👩‍👧‍👦 𝗡𝗵𝗼́𝗺: ${threadName}
+🔰 𝗧𝗶𝗱: ${event.threadID}
+⏰ 𝗧𝗶𝗺𝗲: ${time}
+⚜️ Đ𝗮̃ 𝗴𝘂̛̉𝗶 𝘆𝗲̂𝘂 𝗰𝗮̂̀𝘂 đ𝘂̛𝗼̛̣𝗰 𝗱𝘂𝘆𝗲̣̂𝘁 𝗯𝗼𝘅 đ𝗲̂́𝗻 𝗯𝗮̣𝗻`, e);
+		  })
+		  return api.sendMessage(`=== [ 𝗚𝘂̛̉𝗶 𝘆𝗲̂𝘂 𝗰𝗮̂̀𝘂  ] ===
 
-      let find_thuebot = thuebot.find(($) => $.t_id == event.threadID);
-      if (!find_thuebot && event.body.trim() !== `${prefix}callad`) {
-        if (event && event.threadID) {
-          return api.shareContact(
-            `[  Thông Báo Thuê Bot  ]\n─────────────────\n❌ Nhóm của bạn chưa kích hoạt sử dụng bot, vui lòng sử dụng lệnh "${prefix}callad" để liên hệ Admin.\n─────────────────\n🌐 Facebook:`,
-            global.config.ADMINBOT[0],
-            event.threadID,
-          );
-        } else {
-          console.error("Lỗi khi shareContact");
-          return;
+🔰 𝗜𝗗 𝗻𝗵𝗼́𝗺:\n${event.threadID}
+⚜️ Đ𝗮̃ 𝗴𝘂̛̉𝗶 𝘆𝗲̂𝘂 𝗰𝗮̂̀𝘂 đ𝗲̂́𝗻 ${global.config.ADMINBOT.length} 𝗮𝗱𝗺𝗶𝗻
+⏰ 𝗧𝗵𝗼̛̀𝗶 𝗴𝗶𝗮𝗻:${time}
+
+𝗰𝗼̀𝗻 đ𝘂̛𝗼̛̣𝗰 𝗱𝘂𝘆𝗲̣̂𝘁 𝗵𝗮𝘆 𝗸𝗵𝗼̂𝗻𝗴 𝘁𝗵𝗶̀ 𝗰𝗵𝗶̣𝘂 💓`, event.threadID, () => {
+			let pendingData = JSON.parse(fs.readFileSync(pendingPath));
+			if (!pendingData.includes(event.threadID)) {
+			  pendingData.push(event.threadID);
+			fs.writeFileSync(pendingPath, JSON.stringify(pendingData));
+			}
+		  });
+		}
+      // if (event.threadID == 7349457131746039) console.log(prefix);
+		if (event.body && event.body.startsWith(prefix)) return api.sendMessage({body: `===== [ THUÊ BOT ] =====
+━━━━━━━━━━━━━━━━
+⛔️ 𝐍𝐡𝐨́𝐦 𝐜𝐮̉𝐚 𝐛𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 𝐭𝐡𝐮𝐞̂ 𝐛𝐨𝐭,𝐕𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐭𝐡𝐮𝐞̂ 𝐛𝐨𝐭 đ𝐞̂̉ 𝐭𝐢𝐞̂́𝐩 𝐭𝐮̣𝐜 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠.\n
+𝐋𝐢𝐞̂𝐧 𝐡𝐞̣̂ 𝐀𝐝𝐦𝐢𝐧: NgVanNamPhuong
+𝐅𝐛: fb.me//NgVanNamPhuong \n💮 𝗡𝗵𝗼́𝗺 𝗯𝗮̣𝗻 𝗰𝗵𝘂̛𝗮 đ𝘂̛𝗼̛̣𝗰 𝗮𝗱𝗺𝗶𝗻 𝗱𝘂𝘆𝗲̣̂𝘁,đ𝗲̂̉ đ𝘂̛𝗼̛̣𝗰 𝗱𝘂𝘆𝗲̣̂𝘁 , 𝗱𝘂̀𝗻𝗴: ${prefix}thuebot
+━━━━━━━━━━━━━━━━
+⏰️=『${time}』=⏰️`, attachment: (await global.nodemodule["axios"]({
+url: (await global.nodemodule["axios"]('https://api.sumiproject.net/images/girl ')).data.data,
+method: "GET",
+responseType: "stream"
+})).data
+},event.threadID, event.messageID); 
+		
+	  };
+        switch (event.type) {
+            case "message":
+            case "message_reply":
+            case "message_unsend":
+                handleCreateDatabase({ event });
+                handleCommand({ event });
+                handleReply({ event });
+                handleCommandEvent({ event });
+
+                break;
+            case "change_thread_image":
+            case "event": 
+                handleEvent({ event });
+                handleRefresh({ event });
+                  if (event.type != "change_thread_image" && global.config.notiGroup) {
+                  var ttoan = `\n→ Bây giờ là: ${time}`
+					var msg = `===『 𝐔𝐏𝐃𝐀𝐓𝐄 𝐆𝐑𝐎𝐔𝐏 』===\n━━━━━━━━━━━━━━━━━━\n→ `
+					msg += event.logMessageBody
+					if(event.author == api.getCurrentUserID()) {
+						hhh = msg.replace('Bạn ', global.config.BOTNAME)
+					}
+					api.sendMessage({body: msg + ttoan, attachment: (await global.nodemodule["axios"]({
+url: (await global.nodemodule["axios"]('https://api.sumiproject.net/images/girl ')).data.data,
+method: "GET",
+responseType: "stream"
+})).data
+ },event.threadID, event.messageID);                        
+                                                           }
+                break;
+            case "message_reaction":
+        handleUnsend({ event });
+		  handleReaction({ event });
+        var { iconUnsend } = global.config
+				if(iconUnsend.status && event.senderID == api.getCurrentUserID() && event.reaction == iconUnsend.icon) {
+					api.unsendMessage(event.messageID)
+				}
+                handleReaction({ event });
+                break;
+            default:
+                break;
         }
-      }
-
-      if (
-        find_thuebot &&
-        new Date(form_mm_dd_yyyy(find_thuebot.time_end)).getTime() <=
-          Date.now() + 25200000 &&
-        event.body.trim() !== `${prefix}callad`
-      ) {
-        if (event && event.threadID) {
-          return api.shareContact(
-            `[  Thông Báo Thuê Bot  ]\n─────────────────\n❌ Nhóm của bạn đã hết hạn thời gian sử dụng bot, vui lòng sử dụng lệnh "${prefix}callad" liên hệ Admin để gia hạn.\n─────────────────\n🌐 Facebook:`,
-            global.config.ADMINBOT[0],
-            event.threadID,
-          );
-        } else {
-          console.error("Lỗi khi shareContact");
-          return;
-        }
-      }
-    }
-    const checkttDataPath = __dirname + "/../modules/commands/checktt/";
-    setInterval(async () => {
-      const day_now = moment.tz("Asia/Ho_Chi_Minh").day();
-      if (day != day_now) {
-        day = day_now;
-        const checkttData = fs.readdirSync(checkttDataPath);
-        console.log("--> CHECKTT: Ngày Mới");
-        checkttData.forEach(async (checkttFile) => {
-          const checktt = JSON.parse(
-            fs.readFileSync(checkttDataPath + checkttFile),
-          );
-          let storage = [],
-            count = 1;
-          for (const item of checktt.day) {
-            const userName =
-              (await Users.getNameUser(item.id)) || "Facebook User";
-            const itemToPush = item;
-            itemToPush.name = userName;
-            storage.push(itemToPush);
-          }
-          storage.sort((a, b) => {
-            if (a.count > b.count) {
-              return -1;
-            } else if (a.count < b.count) {
-              return 1;
-            } else {
-              return a.name.localeCompare(b.name);
-            }
-          });
-          let checkttBody = "[ Top 20 Tương Tác Ngày ]\n─────────────────\n";
-          checkttBody += storage
-            .slice(0, 20)
-            .map((item) => {
-              return `${count++}. ${item.name} - ${item.count} tin.`;
-            })
-            .join("\n");
-          api.sendMessage(
-            `${checkttBody}\n─────────────────\nTổng tin nhắn trong ngày: ${storage.reduce((a, b) => a + b.count, 0)} tin\n⚡ Các bạn khác cố gắng tương tác nếu muốn lên top nha :3`,
-            checkttFile.replace(".json", ""),
-            (err) => (err ? logger(err) : ""),
-          );
-          checktt.last.day = JSON.parse(JSON.stringify(checktt.day));
-          checktt.day.forEach((e) => {
-            e.count = 0;
-          });
-          checktt.time = day_now;
-
-          fs.writeFileSync(
-            checkttDataPath + checkttFile,
-            JSON.stringify(checktt, null, 4),
-          );
-        });
-        if (day_now == 1) {
-          console.log("--> CHECKTT: Tuần Mới");
-          checkttData.forEach(async (checkttFile) => {
-            const checktt = JSON.parse(
-              fs.readFileSync(checkttDataPath + checkttFile),
-            );
-            if (!checktt.last)
-              checktt.last = {
-                time: day_now,
-                day: [],
-                week: [],
-              };
-            let storage = [],
-              count = 1;
-            for (const item of checktt.week) {
-              const userName =
-                (await Users.getNameUser(item.id)) || "Facebook User";
-              const itemToPush = item;
-              itemToPush.name = userName;
-              storage.push(itemToPush);
-            }
-            storage.sort((a, b) => {
-              if (a.count > b.count) {
-                return -1;
-              } else if (a.count < b.count) {
-                return 1;
-              } else {
-                return a.name.localeCompare(b.name);
-              }
-            });
-            let checkttBody = "[ Top 20 Tương Tác Tuần ]\n─────────────────\n";
-            checkttBody += storage
-              .slice(0, 10)
-              .map((item) => {
-                return `${count++}. ${item.name} - ${item.count} tin.`;
-              })
-              .join("\n");
-            api.sendMessage(
-              `${checkttBody}\n─────────────────\nTổng tin nhắn trong tuần: ${storage.reduce((a, b) => a + b.count, 0)} tin.\n⚡ Các bạn khác cố gắng tương tác nếu muốn lên top nha :>`,
-              checkttFile.replace(".json", ""),
-              (err) => (err ? logger(err) : ""),
-            );
-            checktt.last.week = JSON.parse(JSON.stringify(checktt.week));
-            checktt.week.forEach((e) => {
-              e.count = 0;
-            });
-
-            fs.writeFileSync(
-              checkttDataPath + checkttFile,
-              JSON.stringify(checktt, null, 4),
-            );
-          });
-        }
-        global.client.sending_top = false;
-      }
-    }, 1000 * 10);
-
-    if (event.type === "change_thread_image")
-      api.sendMessage(`${event.snippet}`, event.threadID);
-    switch (event.type) {
-      case "message":
-      case "message_reply":
-      case "message_unsend":
-        handleCreateDatabase({ event });
-        handleCommand({ event });
-        handleReply({ event });
-        handleCommandEvent({ event });
-        break;
-      case "event":
-        handleEvent({ event });
-        handleRefresh({ event });
-        if (global.config.notiGroup) {
-          var msg = "";
-          msg += event.logMessageBody;
-          if (event.author == api.getCurrentUserID()) {
-            msg = msg.replace("Bạn", global.config.BOTNAME);
-          }
-          return api.sendMessage(
-            {
-              body: `${msg}`,
-            },
-            event.threadID,
-          );
-        }
-        break;
-      case "message_reaction":
-        var { iconUnsend } = global.config;
-        if (
-          iconUnsend.status &&
-          event.senderID == api.getCurrentUserID() &&
-          event.reaction == iconUnsend.icon
-        ) {
-          api.unsendMessage(event.messageID);
-        }
-        handleReaction({ event });
-        break;
-      default:
-        break;
-    }
-  };
+    };
 };
